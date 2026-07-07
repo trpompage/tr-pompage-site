@@ -4,7 +4,11 @@
 TR Pompage est une entreprise de **pompage de chape fluide** (anhydrite & ciment) basée en région lyonnaise, intervenant sur tout Rhône-Alpes. Clients : **professionnels uniquement** — carreleurs, plombiers-chauffagistes, constructeurs, maîtres d'œuvre. Le concept central du produit ET du site : **la chape est autonivelante** — tout le design file cette métaphore (liquide qui trouve son niveau).
 
 ## Référence de design (SOURCE DE VÉRITÉ)
-`site-v3-reference.html` est le prototype validé par le client (4 pages : Accueil/Pompage, Préparation, Ponçage, Sinistres & autres). Le site final doit **conserver son identité visuelle, son contenu métier et ses idées** :
+`site-v3-reference.html` est le prototype validé par le client (4 pages : Accueil/Pompage, Préparation, Ponçage, Sinistres & autres).
+
+**RÈGLE D'AMBITION — LE PLANCHER, PAS LE PLAFOND.** La référence fixe l'identité (tokens, ton, contenu métier, idées) mais le client attend un résultat **nettement plus spectaculaire** qu'elle. Interdiction de livrer une simple transposition : chaque phase doit faire paraître la référence comme une maquette. Avant de présenter un résultat, compare-le côte à côte à la référence ; si le gain n'est pas évident, itère d'abord. Le spectaculaire ne doit jamais coûter la lisibilité ni la performance (budgets en fin de fichier).
+
+Idées de la référence à conserver et dépasser :
 - Hero : métaballs 3D visqueuses (raymarching) + flaque autonivelante, gouttes au clic avec ondulations
 - Fonte du blob au scroll ("la gravité fait le reste")
 - Calculateur de coulée (m² × mm → m³, temps de pompage, toupies, cuve animée)
