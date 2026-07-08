@@ -42,7 +42,7 @@ export default function Hero() {
 
       {!reduced && (
         <div className="drop-hint rv d3">
-          <b>CLIC / TAP</b> DANS LA MATIÈRE → GOUTTE
+          <b>TAP</b> → GOUTTE · <b>MAINTENIR</b> → VERSER
         </div>
       )}
 

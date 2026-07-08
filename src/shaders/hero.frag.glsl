@@ -8,6 +8,8 @@ uniform float uScroll;
 uniform vec2 uRes;
 uniform vec2 uMouse;
 uniform int uSteps;
+uniform sampler2D uFluid; // colorant de la sim Navier-Stokes (P1)
+uniform float uFluidOn;
 
 #define MAXD 4
 #define MAXR 5
@@ -83,7 +85,20 @@ void main() {
     tD += d * .85;
     if (tD > 11.) break;
   }
-  if (hit < 0.) { gl_FragColor = vec4(0.); return; }
+  if (hit < 0.) {
+    // pas de surface 3D touchée : composite du colorant fluide teinté chape
+    if (uFluidOn > .5) {
+      vec3 dye = texture2D(uFluid, gl_FragCoord.xy / uRes).rgb;
+      float lum = max(dye.r, max(dye.g, dye.b));
+      if (lum > .004) {
+        vec3 c = dye / (1. + lum * .25); // tone map doux
+        gl_FragColor = vec4(c, clamp(lum * 1.15, 0., .95));
+        return;
+      }
+    }
+    gl_FragColor = vec4(0.);
+    return;
+  }
   vec3 p = ro + rd * hit;
   vec3 n = calcN(p);
   vec3 albedo = vec3(.788, .714, .580);
