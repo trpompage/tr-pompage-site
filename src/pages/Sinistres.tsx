@@ -16,13 +16,7 @@ export default function Sinistres() {
     <main ref={ref}>
       <PageHero
         crumb="MÉTIER D"
-        title={
-          <>
-            Sinistres
-            <br />
-            <em>&amp; autres</em>
-          </>
-        }
+        lines={["Sinistres", <em key="l2">&amp; autres</em>]}
         lead="Fissures, zones qui sonnent creux, dégât des eaux, ou rénovation lourde : on répare quand la chape peut être sauvée, on casse proprement quand elle ne le mérite plus. Avec ou sans plancher chauffant, et un avis franc avant d'ouvrir quoi que ce soit."
       />
 

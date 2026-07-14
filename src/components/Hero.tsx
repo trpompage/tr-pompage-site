@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { Cta } from "./Buttons";
+import PourLines from "./PourLines";
 
 /* three.js + R3F chargés en différé : hors du bundle initial */
 const HeroCanvas = lazy(() => import("./HeroCanvas"));
@@ -48,12 +49,16 @@ export default function Hero() {
 
       <div className="hero-inner">
         <div className="eyebrow rv">POMPAGE DE CHAPE FLUIDE — ANHYDRITE &amp; CIMENT</div>
-        <h1 className="rv d1">
-          La chape
-          <br />
-          <span className="liquid-word">coule</span>,
-          <br />
-          on la met à niveau.
+        <h1 className="rv d1 pour-title">
+          <PourLines
+            lines={[
+              "La chape",
+              <>
+                <span className="liquid-word">coule</span>,
+              </>,
+              "on la met à niveau.",
+            ]}
+          />
         </h1>
         <div className="hero-sub">
           <p className="rv d2">

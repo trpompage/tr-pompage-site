@@ -16,13 +16,7 @@ export default function Preparation() {
     <main ref={ref}>
       <PageHero
         crumb="MÉTIER A"
-        title={
-          <>
-            Préparation
-            <br />
-            <em>d'avant chape</em>
-          </>
-        }
+        lines={["Préparation", <em key="l2">d'avant chape</em>]}
         lead="Le niveau final se joue avant la coulée. Bande périphérique, isolant thermique TMS®, film polyane, sous-couche acoustique Assour Chape® ou Tramichape® : on monte le système complet, continu, étanche aux laitances — prêt à recevoir la chape fluide."
       />
 
