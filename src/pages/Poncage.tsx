@@ -16,13 +16,7 @@ export default function Poncage() {
     <main ref={ref}>
       <PageHero
         crumb="MÉTIER C"
-        title={
-          <>
-            Ponçage de
-            <br />
-            <em>chape fluide</em>
-          </>
-        }
+        lines={["Ponçage de", <em key="l2">chape fluide</em>]}
         lead="La laitance dégage, le revêtement accroche. Ponçage mécanique sous aspiration, dépoussiérage complet, contrôle d'humidité : on livre au carreleur une surface cohésive, propre, prête au primaire."
       />
 

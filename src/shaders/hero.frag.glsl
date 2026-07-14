@@ -8,6 +8,9 @@ uniform float uScroll;
 uniform vec2 uRes;
 uniform vec2 uMouse;
 uniform int uSteps;
+uniform sampler2D uFluid; // colorant de la sim Navier-Stokes (P1)
+uniform float uFluidOn;
+uniform float uTilt; // roll du device (rad) — la flaque reste de niveau (P1)
 
 #define MAXD 4
 #define MAXR 5
@@ -49,7 +52,11 @@ float map(vec3 p) {
     vec3 dr = uDrops[i];
     if (dr.z > 0.) d = smin(d, length(p - vec3(dr.x, dr.y, 0.)) - dr.z, .5);
   }
-  float pool = p.y - (POOL_Y + melt * .22 + poolH(p.xz));
+  // la flaque contre-tourne le roll du device : autonivelante dans le monde
+  vec3 q = p;
+  float ct = cos(uTilt), st = sin(uTilt);
+  q.xy = mat2(ct, -st, st, ct) * q.xy;
+  float pool = q.y - (POOL_Y + melt * .22 + poolH(q.xz));
   d = smin(d, pool, .55);
   return d;
 }
@@ -83,7 +90,21 @@ void main() {
     tD += d * .85;
     if (tD > 11.) break;
   }
-  if (hit < 0.) { gl_FragColor = vec4(0.); return; }
+  if (hit < 0.) {
+    // pas de surface 3D touchée : fond --ink opaque (nécessaire au bloom,
+    // qui déborderait sinon sur de l'alpha 0) + composite du colorant fluide
+    vec3 bg = vec3(.082, .071, .051);
+    if (uFluidOn > .5) {
+      vec3 dye = texture2D(uFluid, gl_FragCoord.xy / uRes).rgb;
+      float lum = max(dye.r, max(dye.g, dye.b));
+      if (lum > .004) {
+        vec3 c = dye / (1. + lum * .25); // tone map doux
+        bg = mix(bg, c, clamp(lum * 1.15, 0., .95));
+      }
+    }
+    gl_FragColor = vec4(bg, 1.);
+    return;
+  }
   vec3 p = ro + rd * hit;
   vec3 n = calcN(p);
   vec3 albedo = vec3(.788, .714, .580);

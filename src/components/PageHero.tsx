@@ -1,13 +1,15 @@
 import type { ReactNode } from "react";
+import PourLines from "./PourLines";
 
-/** Mini-hero des sous-pages métier. */
+/** Mini-hero des sous-pages métier. `lines` = lignes du H1, mises en place
+ *  en coulée (typo cinétique P1). */
 export default function PageHero({
   crumb,
-  title,
+  lines,
   lead,
 }: {
   crumb: string;
-  title: ReactNode;
+  lines: ReactNode[];
   lead: string;
 }) {
   return (
@@ -16,7 +18,9 @@ export default function PageHero({
         <div className="crumb rv">
           TR·POMPAGE <b>/</b> {crumb}
         </div>
-        <h1 className="rv d1">{title}</h1>
+        <h1 className="rv d1 pour-title">
+          <PourLines lines={lines} />
+        </h1>
         <p className="lead rv d2">{lead}</p>
       </div>
     </div>

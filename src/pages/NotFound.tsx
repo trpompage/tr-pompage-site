@@ -14,13 +14,7 @@ export default function NotFound() {
     <main ref={ref}>
       <PageHero
         crumb="ERREUR 404"
-        title={
-          <>
-            Chantier
-            <br />
-            <em>introuvable</em>
-          </>
-        }
+        lines={["Chantier", <em key="l2">introuvable</em>]}
         lead="Cette adresse ne mène à aucune coulée. La page a peut-être été déposée — revenez au niveau zéro."
       />
       <section className="page-cta" style={{ borderTop: "none" }}>
