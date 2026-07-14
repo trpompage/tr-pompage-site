@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Gauge from "./components/Gauge";
 import Footer from "./components/Footer";
 import ScrollManager from "./components/ScrollManager";
+import LiquidTransition from "./components/LiquidTransition";
 import Home from "./pages/Home";
 import Preparation from "./pages/Preparation";
 import Poncage from "./pages/Poncage";
@@ -23,6 +24,7 @@ export default function App() {
       <Header />
       <Gauge />
       <ScrollManager />
+      <LiquidTransition />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/preparation" element={<Preparation />} />
