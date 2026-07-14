@@ -86,17 +86,18 @@ void main() {
     if (tD > 11.) break;
   }
   if (hit < 0.) {
-    // pas de surface 3D touchée : composite du colorant fluide teinté chape
+    // pas de surface 3D touchée : fond --ink opaque (nécessaire au bloom,
+    // qui déborderait sinon sur de l'alpha 0) + composite du colorant fluide
+    vec3 bg = vec3(.082, .071, .051);
     if (uFluidOn > .5) {
       vec3 dye = texture2D(uFluid, gl_FragCoord.xy / uRes).rgb;
       float lum = max(dye.r, max(dye.g, dye.b));
       if (lum > .004) {
         vec3 c = dye / (1. + lum * .25); // tone map doux
-        gl_FragColor = vec4(c, clamp(lum * 1.15, 0., .95));
-        return;
+        bg = mix(bg, c, clamp(lum * 1.15, 0., .95));
       }
     }
-    gl_FragColor = vec4(0.);
+    gl_FragColor = vec4(bg, 1.);
     return;
   }
   vec3 p = ro + rd * hit;

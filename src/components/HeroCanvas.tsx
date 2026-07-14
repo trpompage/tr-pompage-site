@@ -1,8 +1,14 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { MutableRefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
-import { FluidSim, QUALITE_PLEINE, QUALITE_REDUITE } from "../lib/fluid/FluidSim";
+import {
+  FluidSim,
+  QUALITE_PLEINE,
+  QUALITE_REDUITE,
+  supportsFloatBuffers,
+} from "../lib/fluid/FluidSim";
 import fragmentShader from "../shaders/hero.frag.glsl";
 
 /* Chargé en dynamic import depuis Hero.tsx : three.js + R3F restent
@@ -340,18 +346,43 @@ function HeroScene({
   );
 }
 
-export default function HeroCanvas({ frameloop, dpr, ...scene }: HeroCanvasProps) {
+/** Post-processing : bloom sélectif calé sur le liseré orange + specular,
+ *  grain film léger, vignette douce. Coupé en palier GPU dégradé, et absent
+ *  si les color buffers flottants manquent (dégradation invisible). */
+function Effects({ enabled }: { enabled: boolean }) {
+  const { gl } = useThree();
+  if (!enabled || !supportsFloatBuffers(gl)) return null;
+  return (
+    <EffectComposer multisampling={0}>
+      <Bloom mipmapBlur intensity={0.55} luminanceThreshold={0.85} luminanceSmoothing={0.18} />
+      <Noise premultiply opacity={0.35} />
+      <Vignette offset={0.28} darkness={0.55} />
+    </EffectComposer>
+  );
+}
+
+export default function HeroCanvas({ frameloop, dpr, onDegrade, ...scene }: HeroCanvasProps) {
+  const [degraded, setDegraded] = useState(false);
+  const degrade = useCallback(() => {
+    setDegraded(true);
+    onDegrade();
+  }, [onDegrade]);
   return (
     <Canvas
       className="gl-wrap"
       aria-hidden="true"
       frameloop={frameloop}
       dpr={dpr}
+      /* linear + flat : le shader sort des couleurs déjà "écran" — pas de
+         conversion sRGB ni de tone mapping à rajouter (sinon image délavée) */
+      linear
+      flat
       gl={{ antialias: false, alpha: true }}
       onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
       style={{ position: "absolute", inset: 0 }}
     >
-      <HeroScene {...scene} />
+      <HeroScene {...scene} onDegrade={degrade} />
+      <Effects enabled={!degraded} />
     </Canvas>
   );
 }

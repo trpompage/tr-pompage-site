@@ -77,6 +77,19 @@ function mat(fragment: string, uniforms: Record<string, THREE.IUniform>) {
   });
 }
 
+/** WebGL2 + rendu vers textures flottantes (requis par la sim ET le
+ *  post-processing half-float) — sinon dégradation invisible */
+export function supportsFloatBuffers(renderer: THREE.WebGLRenderer): boolean {
+  const gl = renderer.getContext();
+  const isWebGL2 =
+    typeof WebGL2RenderingContext !== "undefined" && gl instanceof WebGL2RenderingContext;
+  return (
+    isWebGL2 &&
+    (renderer.extensions.has("EXT_color_buffer_float") ||
+      renderer.extensions.has("EXT_color_buffer_half_float"))
+  );
+}
+
 /** résolution FBO : dimension mini = res, l'autre suit l'aspect du canvas */
 function fboSize(res: number, aspect: number): [number, number] {
   const a = Math.max(aspect, 1 / aspect);
@@ -117,12 +130,7 @@ export class FluidSim {
 
   /** null si WebGL2 ou les color buffers flottants manquent (dégradation invisible) */
   static create(renderer: THREE.WebGLRenderer, quality: FluidQuality): FluidSim | null {
-    const gl = renderer.getContext();
-    const isWebGL2 = typeof WebGL2RenderingContext !== "undefined" && gl instanceof WebGL2RenderingContext;
-    const hasFloat =
-      renderer.extensions.has("EXT_color_buffer_float") ||
-      renderer.extensions.has("EXT_color_buffer_half_float");
-    if (!isWebGL2 || !hasFloat) return null;
+    if (!supportsFloatBuffers(renderer)) return null;
     return new FluidSim(renderer, quality);
   }
 
