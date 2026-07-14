@@ -10,6 +10,7 @@ uniform vec2 uMouse;
 uniform int uSteps;
 uniform sampler2D uFluid; // colorant de la sim Navier-Stokes (P1)
 uniform float uFluidOn;
+uniform float uTilt; // roll du device (rad) — la flaque reste de niveau (P1)
 
 #define MAXD 4
 #define MAXR 5
@@ -51,7 +52,11 @@ float map(vec3 p) {
     vec3 dr = uDrops[i];
     if (dr.z > 0.) d = smin(d, length(p - vec3(dr.x, dr.y, 0.)) - dr.z, .5);
   }
-  float pool = p.y - (POOL_Y + melt * .22 + poolH(p.xz));
+  // la flaque contre-tourne le roll du device : autonivelante dans le monde
+  vec3 q = p;
+  float ct = cos(uTilt), st = sin(uTilt);
+  q.xy = mat2(ct, -st, st, ct) * q.xy;
+  float pool = q.y - (POOL_Y + melt * .22 + poolH(q.xz));
   d = smin(d, pool, .55);
   return d;
 }

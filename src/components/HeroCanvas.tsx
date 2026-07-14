@@ -59,6 +59,8 @@ export interface HeroCanvasProps {
   gcapRef: MutableRefObject<HTMLDivElement | null>;
   fqRef: MutableRefObject<HTMLSpanElement | null>;
   ffpsRef: MutableRefObject<HTMLSpanElement | null>;
+  /** roll du device en radians (gyroscope) — la flaque contre-tourne */
+  tiltRef: MutableRefObject<number>;
   onDegrade: () => void;
 }
 
@@ -77,6 +79,7 @@ function HeroScene({
   gcapRef,
   fqRef,
   ffpsRef,
+  tiltRef,
   onDegrade,
 }: Omit<HeroCanvasProps, "frameloop" | "dpr">) {
   const { gl, size, invalidate } = useThree();
@@ -90,6 +93,7 @@ function HeroScene({
       uSteps: { value: 84 },
       uFluid: { value: blackTexture() as THREE.Texture },
       uFluidOn: { value: 0 },
+      uTilt: { value: 0 },
       uDrops: {
         value: Array.from({ length: MAXD }, () => new THREE.Vector3(0, 99, 0)),
       },
@@ -247,6 +251,9 @@ function HeroScene({
 
     const T = reduced ? STATIC_TIME : state.clock.elapsedTime;
     u.uTime.value = T;
+
+    // gyroscope : la flaque reste de niveau (lissage du roll)
+    u.uTilt.value += (tiltRef.current - u.uTilt.value) * 0.08;
 
     // fonte du blob au scroll — "la gravité fait le reste"
     const heroH = heroRef.current?.offsetHeight ?? innerHeight;
